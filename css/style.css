@@ -1,0 +1,56 @@
+html,
+body,
+.game {
+    height: 100%;
+    width: 100%;
+    height: 100vh;
+    width: 100vw;
+    margin: 0;
+}
+
+.game {
+    background-color: rgb(255, 255, 255);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.card {
+    background-color: rgb(82, 58, 142);
+    padding: 20px;
+    box-shadow: -5px -4px 121px -28px rgba(0, 0, 0, 0.75);
+    border-radius: 20px;
+}
+
+h1 {
+    text-align: center;
+}
+
+table {
+    background-color: rgb(199, 197, 197);
+    border: 10px solid rgb(0, 0, 0);
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 600px;
+}
+
+.board td {
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    transition: 0.5s;
+    border: 1px solid black;
+}
+
+.board td:hover {
+    background-color: rgb(249, 249, 249);
+}
+
+.occupied {
+    background-color: lightgray;
+}
+
+x.click{
+    text-align: center;
+    padding:7%;
+}
