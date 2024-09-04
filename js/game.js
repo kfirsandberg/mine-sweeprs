@@ -7,26 +7,24 @@ const boardRestElement = {
 }
 var gLevel = {
     SIZE: 9,
-    MINES: 5
+    MINES: 10
 }
 var gBoard
 var gGame = {
     isOn: false,
     shownCount: 0,
     markedCount: 0,
-    secsPassed: 0
+    secsPassed: 0,
+    livescount: 3
 }
-
-const MINE = '#'
-const EMPTY = ''
 
 function onInit() {
     gGame.isOn = true
+    renderTimer()
     gBoard = createBoard(gLevel.SIZE)
     renderBoard(gBoard)
-
-
 }
+
 function createBoard(boardSize) {
     var board = []
     for (var i = 0; i < boardSize; i++) {
@@ -35,7 +33,6 @@ function createBoard(boardSize) {
             board[i][j] = { ...boardRestElement }
         }
     }
-    domMines(board)
     // board[3][3] = {
     //     minesAroundCount: 0,
     //     isShown: false,
@@ -52,16 +49,6 @@ function createBoard(boardSize) {
 
     return board
 }
-
-function onCellClicked(elCell) {
-    const cellLocation = elCell.dataset.cell
-    const parts = cellLocation.split('-');
-    var i = Number(parts[0])
-    var j = Number(parts[1])
-    if (gBoard[i][j].isMine) checkGameOver(false)
-    if (!gBoard[i][j].isMine) expandShown(gBoard, elCell, i, j)
-}
-
 function renderBoard(board) {
     var strHTML = '';
     for (var i = 0; i < board.length; i++) {
@@ -89,6 +76,23 @@ function renderBoard(board) {
 
 }
 
+function onCellClicked(elCell) {
+    if (gGame.secsPassed === 0) startTimer()
+    const cellLocation = elCell.dataset.cell
+    const parts = cellLocation.split('-');
+    var i = Number(parts[0])
+    var j = Number(parts[1])
+    if (gGame.secsPassed === 0) domMines(gBoard, i, j)
+    if (gBoard[i][j].isMine && gGame.livescount !== 0) {
+        gGame.livescount--
+        var heart = document.querySelector(".hearts").innerText
+        var newHeaets = heart.slice(0)
+        document.querySelector(".hearts").innerText = newHeaets
+    }
+    else if (gBoard[i][j].isMine) checkGameOver(false)
+    if (!gBoard[i][j].isMine) expandShown(gBoard, elCell, i, j)
+}
+
 function setMinesNegsCount(board) {
     for (var row = 0; row < board.length; row++) {
         for (var col = 0; col < board.length; col++) {
@@ -110,21 +114,6 @@ function countNegs(cellI, cellJ, board) {
         }
     }
     return negsCount
-}
-
-
-function getRandomizeMines(mines) {
-    
-    var minesCells = []
-    for (var i = 0; i < mines; i++) {
-        var randomCell = {
-            i:
-                getRandomIntInclusive(0, gLevel.SIZE),
-            j: getRandomIntInclusive(0, gLevel.SIZE)
-        }
-        minesCells.push(randomCell)
-    }
-    return minesCells
 }
 
 function expandShown(board, elCell, cellI, cellJ) {
@@ -150,17 +139,31 @@ function expandShown(board, elCell, cellI, cellJ) {
 
 function checkGameOver(isEnd) {
     gGame.isOn = isEnd
+    clearInterval(gTimerInterval)
+
+    document.querySelector('img').src = "img/dead.png"
     console.log('game is over :(((((')
 }
-function drawNum() {
-    var randomInx = getRandomIntInclusive(0, gNums.length)
-    var randoNum = gNums[randomInx]
-    gNums.splice(randomInx, 1)
-    return randoNum
+
+function getRandomizeMines(mines, firstCellI, firstCellJ) {
+    var emtpyCells = []
+    for (var i = 0; i < gLevel.SIZE; i++) {
+        for (var j = 0; j < gLevel.SIZE; j++) {
+            if (i === firstCellI && j === firstCellJ) continue
+            emtpyCells.push({ i: i, j: j })
+        }
+    }
+    var minesCells = []
+    for (var i = 0; i < mines; i++) {
+        var randomCell = getRandomIntInclusive(0, emtpyCells.length)
+        minesCells.push(emtpyCells[randomCell])
+        emtpyCells.splice(randomCell, 1)
+    }
+    return minesCells
 }
 
-function domMines(board) {
-    var randomMine = getRandomizeMines(gLevel.MINES)
+function domMines(board, i, j) {
+    var randomMine = getRandomizeMines(gLevel.MINES, i, j)
     for (var i = 0; i < randomMine.length; i++) {
         var randomI = randomMine[i].i
         var randomj = randomMine[i].j
@@ -171,5 +174,18 @@ function domMines(board) {
             isMarked: false
         }
     }
-
+    renderBoard(board)
 }
+
+function smileButton() {
+    document.querySelector('img').src = "img/smile.png"
+
+    clearInterval(gTimerInterval)
+    gElapsedTime = 0
+    gGame.secsPassed = 0
+    renderTimer()
+    gBoard = createBoard(gLevel.SIZE)
+    renderBoard(gBoard)
+}
+
+
