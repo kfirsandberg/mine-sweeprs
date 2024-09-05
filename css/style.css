@@ -27,6 +27,8 @@ body,
 
 h1 {
     margin-bottom: 10px;
+    font-size: 3rem;
+
     text-align: center;
     margin-top: 0;
 }
@@ -39,28 +41,41 @@ h1 {
     display: flex;
     justify-content: space-between; 
     width: 100%;
-    margin-bottom: 0;
 }
 .face img{
+    flex:1;
     display: flex;
     justify-content: center;
     align-items: center;
     width: 40px;
     height: 40px;
 }
-.hearts, .timer{    
+.hearts{
+    flex:1;
     display: inline-block;
+    margin-left: auto;
+    align-self: flex-end;
+    font-size: 1.2rem;
+}
+
+.timer{   
+    flex:1;
+    display: flex;
+    justify-content: right;
     align-self: flex-end;
     font-size: 1.2rem;
 }
 table {
-    background-color: rgb(133, 133, 133);
+    background-color: rgb(184, 184, 184);
     border: 10px solid rgb(0, 0, 0);
-    border-collapse: collapse;
+    border-collapse: 10%;
     max-width: 600px;
     margin: 1px 0;
+    border-radius: 3%;
+    
 }
 .board td {
+    border-radius: 10%;
     width: 40px;
     height: 40px;
     text-align: center;

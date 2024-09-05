@@ -31,8 +31,13 @@ function renderTimer() {
     gGame.secsPassed = gElapsedTime
 }
 function cellColor(i, j) {
-    document.querySelector(`[data-cell="${i}-${j}"]`).style.backgroundColor = 'rgb(224, 224, 224)'
+    document.querySelector(`[data-cell="${i}-${j}"]`).style.backgroundColor = 'rgb(225, 225, 225)'
 }
 function updateHearts() {
-    document.querySelector(".hearts").innerText = HEART.repeat(gGame.livescount)
+    document.querySelector(".hearts").innerText = HEART.repeat(gGame.livesCount)
+}
+
+function renderCell(i,j){
+    document.querySelector(`[data-cell="${i}-${j}"]`).innerText = gBoard[i][j].minesAroundCount
+
 }

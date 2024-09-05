@@ -18,7 +18,7 @@ var gGame = {
     shownCount: 0,
     markedCount: 0,
     secsPassed: 0,
-    livescount: 3
+    livesCount: 3
 }
 
 function onInit() {
@@ -86,19 +86,30 @@ function onCellClicked(elCell) {
     const parts = cellLocation.split('-');
     var i = Number(parts[0])
     var j = Number(parts[1])
-    if (gBoard[i][j].isShown) return
-    else {
-        if (gGame.secsPassed === 0) domMines(gBoard, i, j) //to start the game 
-        if (gBoard[i][j].isMine && gGame.livescount !== 0) { //check if you out of lives
-            gGame.livescount--
-            updateHearts()
-        }
-        if (gBoard[i][j].isMine && gGame.livescount === 0) gameOver() // check if the game is over
-        if (!gBoard[i][j].isMine) expandShown(gBoard, elCell, i, j)
-        if (gGame.shownCount === gLevel.CELLS - gLevel.MINES) { // check if you won the game 
-            gameWon()
-        }
+    if (gGame.secsPassed === 0) domMines(gBoard, i, j) //to start the game 
+    if (gBoard[i][j].isMine && gGame.livesCount === 0) { // check if the game is over
+        gameOver()
+        return
     }
+    if (gGame.shownCount === gLevel.CELLS - gLevel.MINES) gameWon()
+    if (gBoard[i][j].isMine && gGame.livesCount !== 0) { //check if you touch mine and update lives
+        gGame.livesCount--
+        updateHearts()
+        return
+    }
+    if (gBoard[i][j].isShown) return
+    if (isCellWithNneighbors(i, j) && gBoard[i][j].minesAroundCount > 0) {
+        cellColor(i, j)
+        gBoard[i][j].isShown = true
+        gGame.shownCount++
+        renderCell(i, j)
+
+    }
+    else {
+        // fullExpande(i, j)
+        expandShown(gBoard, elCell, i, j) // expanding board
+    }
+
 }
 
 function expandShown(board, elCell, cellI, cellJ) {
@@ -115,7 +126,7 @@ function expandShown(board, elCell, cellI, cellJ) {
             if (!gBoard[i][j].isMine) {
                 minesAround = gBoard[i][j].minesAroundCount
                 if (minesAround > 0) {
-                    document.querySelector(`[data-cell="${i}-${j}"]`).innerText = minesAround
+                    renderCell(i,j)
                     cellColor(i, j)
                     if (!gBoard[i][j].isShown) {
                         gBoard[i][j].isShown = true
@@ -175,7 +186,7 @@ function domMines(board, i, j) {
 
 function smileButton() {
     document.querySelector('img').src = "img/smile.png"
-    gGame.livescount = 3
+    gGame.livesCount = 3
     updateHearts()
     clearInterval(gTimerInterval)
     gElapsedTime = 0
@@ -193,13 +204,12 @@ function onCellMarked(elCell) {
     if (gBoard[i][j].isMarked) {
         cellColor(i, j)
         gGame.markedCount--
+        gBoard[i][j].isMarked = false
+
     } else {
         gBoard[i][j].isMarked = true
         gGame.markedCount++
         elCell.style.backgroundColor = 'red'
-    }
-    if (gGame.markedCount === gLevel.MINES) {
-
     }
 }
 
@@ -221,6 +231,19 @@ function gameWon() {
     console.log('you won')
     clearInterval(gTimerInterval)
     document.querySelector('img').src = "img/won.png"
+}
 
-
+function isCellWithNneighbors(cellI, cellJ) {
+    var isNeighbor = false
+    for (var i = cellI - 1; i <= cellI + 1; i++) {
+        if (i < 0 || i >= gBoard.length) continue
+        for (var j = cellJ - 1; j <= cellJ + 1; j++) {
+            if (j < 0 || j >= gBoard[i].length) continue
+            if (i === cellI && j === cellJ) continue
+            if (gBoard[i][j].minesAroundCount > 0) {
+                isNeighbor = true
+            }
+        }
+    }
+    return isNeighbor
 }
