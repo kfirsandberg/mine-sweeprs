@@ -30,3 +30,9 @@ function renderTimer() {
     elTimer.innerText = `${seconds}:${milliSeconds}`
     gGame.secsPassed = gElapsedTime
 }
+function cellColor(i, j) {
+    document.querySelector(`[data-cell="${i}-${j}"]`).style.backgroundColor = 'rgb(224, 224, 224)'
+}
+function updateHearts() {
+    document.querySelector(".hearts").innerText = HEART.repeat(gGame.livescount)
+}

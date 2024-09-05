@@ -9,19 +9,23 @@
     <title>Document</title>
 </head>
 
-<body onload="onInit()">
+<body onload="onInit()" oncontextmenu="return false">
     <div class="game">
         <div class="card">
             <h1>Mine Sweeper!</h1>
-            <div class="hearts">❤️❤️❤️</div>
-            <button onclick="smileButton()" class="face">
-                <img src="img/smile.png" alt="">
-            </button>
-            <table>
-                <tbody class="board">
-                </tbody>
-            </table>
-            <span class="timer">00.000</span>
+            <div class="top">
+                <span class="hearts"></span>
+                <button onclick="smileButton()" class="face">
+                    <img src="img/smile.png" alt="face">
+                </button>
+                <span class="timer">00.000</span>
+
+            </div>
+                <table>
+                    <tbody class="board">
+                    </tbody>
+                </table>
+   
         </div>
         <script src="js/utils.js"></script>
         <script src="js/game.js"></script>
