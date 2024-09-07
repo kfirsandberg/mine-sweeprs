@@ -1,5 +1,6 @@
 'use strict'
 const HEART = '❤️'
+var gLastCell=''
 const boardRestElement = {
     minesAroundCount: 0,
     isShown: false,
@@ -18,7 +19,8 @@ var gGame = {
     shownCount: 0,
     markedCount: 0,
     secsPassed: 0,
-    livesCount: 3
+    livesCount: 3,
+    safeClick: 3
 }
 
 function onInit() {
@@ -26,6 +28,7 @@ function onInit() {
     renderTimer()
     gBoard = createBoard(gLevel.SIZE)
     renderBoard(gBoard)
+    updateSafe()
     updateHearts()
 }
 function createBoard(boardSize) {
@@ -47,7 +50,8 @@ function renderBoard(board) {
             var mine = currCell.isMine
             const dateName = `${i}-${j}`
             strHTML += `<td class="cell" data-cell="${dateName}" 
-                                onclick="onCellClicked(this)" oncontextmenu="onCellMarked(this)">
+                                onclick="onCellClicked(this)"
+                                oncontextmenu="onCellMarked(this)">
                             </td>`
         }
         strHTML += '</tr>'
@@ -81,6 +85,7 @@ function countNegs(cellI, cellJ, board) {
 }
 
 function onCellClicked(elCell) {
+    gLastCell =elCell
     if (gGame.secsPassed === 0) startTimer()
     const cellLocation = elCell.dataset.cell
     const parts = cellLocation.split('-');
@@ -186,8 +191,10 @@ function domMines(board, i, j) {
 
 function smileButton() {
     document.querySelector('img').src = "img/smile.png"
+    gGame.safeClick =3
     gGame.livesCount = 3
     updateHearts()
+    updateSafe()
     clearInterval(gTimerInterval)
     gElapsedTime = 0
     gGame.secsPassed = 0
@@ -247,3 +254,4 @@ function isCellWithNneighbors(cellI, cellJ) {
     }
     return isNeighbor
 }
+

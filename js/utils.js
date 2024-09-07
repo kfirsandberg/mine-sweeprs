@@ -41,3 +41,12 @@ function renderCell(i,j){
     document.querySelector(`[data-cell="${i}-${j}"]`).innerText = gBoard[i][j].minesAroundCount
 
 }
+
+function unRenderCell(i,j){
+    document.querySelector(`[data-cell="${i}-${j}"]`).innerText = ''
+
+}
+
+function unCellColor(i, j) {
+    document.querySelector(`[data-cell="${i}-${j}"]`).style.backgroundColor = 'rgb(184, 184, 184)'
+}
